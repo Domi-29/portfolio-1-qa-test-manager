@@ -21,26 +21,29 @@ function TestCaseForm({ onAdd }) {
   };
   return (
     <form onSubmit={handleSubmit}>
-      {" "}
       <div>
-        {" "}
-        <label>Title:</label> <br />{" "}
+        <label htmlFor="title">Title:</label>
+        <br />
         <input
+          id="title"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-        />{" "}
-      </div>{" "}
+        />
+      </div>
       <div>
-        {" "}
-        <label>Priority:</label> <br />{" "}
-        <select value={priority} onChange={(e) => setPriority(e.target.value)}>
-          {" "}
-          <option value="Low">Low</option>{" "}
-          <option value="Medium">Medium</option>{" "}
-          <option value="High">High</option>{" "}
-        </select>{" "}
-      </div>{" "}
+        <label htmlFor="priority">Priority:</label>
+        <br />
+        <select
+          id="priority"
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
+        >
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
       <button type="submit">Add Test Case</button>{" "}
     </form>
   );

@@ -1,47 +1,95 @@
 import React from "react";
-import StatusBadge from "./StatusBadge";
+import { useTestCaseContext } from "../context/TestCaseContext";
+import { STATUS_STYLES } from "../constants/status";
 
-const TestCaseCard = React.memo(({ testCase }) => {
+export default function TestCaseCard({ testCase, onEdit, showDelete = false }) {
+  const { deleteTestCase } = useTestCaseContext();
+
+  const statusStyle = STATUS_STYLES[testCase.status] || {
+    backgroundColor: "#ccc",
+    color: "#fff",
+  };
+
   return (
-    <div style={cardStyle}>
+    <div
+      style={{
+        ...cardStyle,
+        borderLeft: `5px solid ${statusStyle.backgroundColor}`,
+      }}
+    >
       <div style={headerStyle}>
-        <h3 style={titleStyle}>{testCase.title}</h3>
-        <StatusBadge status={testCase.status} />
+        <h3>{testCase.title}</h3>
+        <span style={{ ...statusBadgeStyle, ...statusStyle }}>
+          {testCase.status}
+        </span>
       </div>
 
-      <p style={descriptionStyle}>{testCase.description || "No description"}</p>
+      <p>{testCase.description || "No description"}</p>
+
+      <div style={buttonWrapperStyle}>
+        {onEdit && (
+          <button style={editButtonStyle} onClick={() => onEdit(testCase)}>
+            Edit
+          </button>
+        )}
+
+        {showDelete && (
+          <button
+            style={deleteButtonStyle}
+            onClick={() => deleteTestCase(testCase.id)}
+          >
+            Delete
+          </button>
+        )}
+      </div>
     </div>
   );
-});
+}
 
+// 🎨 Styles
 const cardStyle = {
-  padding: "12px 16px",
-  margin: "8px 0",
-  borderRadius: "12px",
-  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
   backgroundColor: "#fff",
-  border: "1px solid #e0e0e0",
-  transition: "transform 0.1s ease-in-out",
+  padding: "15px 20px",
+  borderRadius: "12px",
+  marginBottom: "15px",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
 };
 
 const headerStyle = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  marginBottom: "6px",
+  marginBottom: "10px",
 };
 
-const titleStyle = {
-  margin: 0,
-  fontSize: "1.1rem",
-  color: "#333",
-  fontWeight: "600",
+const statusBadgeStyle = {
+  color: "#fff",
+  padding: "2px 10px",
+  borderRadius: "12px",
+  fontSize: "12px",
+  fontWeight: "bold",
 };
 
-const descriptionStyle = {
-  margin: 0,
-  fontSize: "0.9rem",
-  color: "#666",
+const buttonWrapperStyle = {
+  marginTop: "10px",
+  display: "flex",
+  gap: "10px",
 };
 
-export default TestCaseCard;
+const editButtonStyle = {
+  padding: "6px 12px",
+  backgroundColor: "#4f46e5",
+  color: "#fff",
+  border: "none",
+  borderRadius: "8px",
+  cursor: "pointer",
+};
+
+const deleteButtonStyle = {
+  padding: "6px 12px",
+  backgroundColor: "#ef4444",
+  color: "#fff",
+  border: "none",
+  borderRadius: "8px",
+  cursor: "pointer",
+};

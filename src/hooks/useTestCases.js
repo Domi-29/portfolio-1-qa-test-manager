@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { TEST_CASE_STATUS, STATUS_COLORS } from "../constants/status";
+import { TEST_CASE_STATUS } from "../constants/status";
 
 const STORAGE_KEY = "qa-test-cases";
 

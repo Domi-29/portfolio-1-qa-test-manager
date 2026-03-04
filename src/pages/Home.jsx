@@ -1,57 +1,71 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useTestCaseContext } from "../context/TestCaseContext";
-import { TEST_CASE_STATUS, STATUS_STYLES } from "../constants/status";
 import TestCaseCard from "../components/TestCaseCard";
+import AddTestCase from "./AddTestCase";
 
-function Home() {
+export default function Home() {
   const { testCases } = useTestCaseContext();
+  const [editingTestCase, setEditingTestCase] = useState(null);
   const [search, setSearch] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
 
-  const filteredTestCases = useMemo(() => {
-    return testCases
-      .filter((tc) =>
-        filterStatus === "all" ? true : tc.status === filterStatus,
-      )
-      .filter((tc) => tc.title.toLowerCase().includes(search.toLowerCase()));
-  }, [testCases, filterStatus, search]);
+  const filteredCases = testCases.filter((tc) =>
+    tc.title.toLowerCase().includes(search.toLowerCase()),
+  );
 
   return (
-    <div>
+    <div style={containerStyle}>
       <h2>Home</h2>
 
-      {/* Search + Filter */}
       <input
         type="text"
-        placeholder="Search by title..."
+        placeholder="Search test cases..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        style={{ marginRight: "10px", padding: "5px" }}
+        style={searchStyle}
       />
 
-      <select
-        value={filterStatus}
-        onChange={(e) => setFilterStatus(e.target.value)}
-        style={{ padding: "5px" }}
-      >
-        <option value="all">All</option>
-        <option value={TEST_CASE_STATUS.PASSED}>Passed</option>
-        <option value={TEST_CASE_STATUS.FAILED}>Failed</option>
-        <option value={TEST_CASE_STATUS.BLOCKED}>Blocked</option>
-      </select>
+      {filteredCases.length === 0 && <p>No test cases found.</p>}
 
-      {/* Test Cases */}
-      <div style={{ marginTop: "20px" }}>
-        {filteredTestCases.map((tc) => (
-          <TestCaseCard
-            key={tc.id}
-            testCase={tc}
-            style={{ ...STATUS_STYLES[tc.status] }} // pridanie farby podľa statusu
+      {filteredCases.map((tc) => (
+        <TestCaseCard
+          key={tc.id}
+          testCase={tc}
+          onEdit={setEditingTestCase}
+          showDelete
+        />
+      ))}
+
+      {editingTestCase && (
+        <div style={editWrapperStyle}>
+          <AddTestCase
+            existingTestCase={editingTestCase}
+            onFinish={() => setEditingTestCase(null)}
           />
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
 
-export default Home;
+// 🎨 Styles
+const containerStyle = {
+  maxWidth: "600px",
+  margin: "0 auto",
+  padding: "20px",
+};
+
+const editWrapperStyle = {
+  marginTop: "30px",
+  padding: "20px",
+  borderRadius: "16px",
+  backgroundColor: "#f9fafb",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+};
+
+const searchStyle = {
+  width: "100%",
+  padding: "10px",
+  marginBottom: "20px",
+  borderRadius: "8px",
+  border: "1px solid #ccc",
+};

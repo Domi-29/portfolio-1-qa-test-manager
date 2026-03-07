@@ -16,7 +16,10 @@ export function useTestCases() {
   const addTestCase = (newTestCase) => {
     setTestCases((prev) => [
       ...prev,
-      { ...newTestCase, status: TEST_CASE_STATUS.BLOCKED },
+      {
+        ...newTestCase,
+        status: newTestCase.status || TEST_CASE_STATUS.BLOCKED,
+      },
     ]);
   };
 

@@ -17,15 +17,16 @@ export function useTestCases() {
     setTestCases((prev) => [
       ...prev,
       {
+        id: Date.now(), // jednoduché unikátne ID
         ...newTestCase,
         status: newTestCase.status || TEST_CASE_STATUS.BLOCKED,
       },
     ]);
   };
 
-  const updateTestCase = (id, updatedData) => {
+  const updateTestCase = (updatedTestCase) => {
     setTestCases((prev) =>
-      prev.map((tc) => (tc.id === id ? { ...tc, ...updatedData } : tc)),
+      prev.map((tc) => (tc.id === updatedTestCase.id ? updatedTestCase : tc)),
     );
   };
 

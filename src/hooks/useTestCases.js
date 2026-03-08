@@ -17,7 +17,7 @@ export function useTestCases() {
     setTestCases((prev) => [
       ...prev,
       {
-        id: Date.now(), // jednoduché unikátne ID
+        id: Date.now(),
         ...newTestCase,
         status: newTestCase.status || TEST_CASE_STATUS.BLOCKED,
       },

@@ -8,10 +8,11 @@ export default function Dashboard() {
   const { testCases } = useTestCaseContext();
   const [editingTestCase, setEditingTestCase] = useState(null);
 
-  // Spočítame statusy pre graf
   const passed = testCases.filter((tc) => tc.status === "passed").length;
   const failed = testCases.filter((tc) => tc.status === "failed").length;
   const blocked = testCases.filter((tc) => tc.status === "blocked").length;
+
+  const total = testCases.length;
 
   const chartData = [
     { name: "Passed", value: passed },
@@ -25,44 +26,60 @@ export default function Dashboard() {
     <div style={containerStyle}>
       <h2>Dashboard</h2>
 
-      {/* Empty state */}
       {testCases.length === 0 && (
         <div style={emptyStateStyle}>
           <p>No test cases yet. Add your first test case!</p>
         </div>
       )}
 
-      {/* Flex container pre stats + graf */}
       {testCases.length > 0 && (
-        <div style={statsChartContainer}>
-          {/* Stats */}
-          <div style={statsStyle}>
-            <p>Passed: {passed}</p>
-            <p>Failed: {failed}</p>
-            <p>Blocked: {blocked}</p>
+        <>
+          {/* Stats cards */}
+          <div style={statsGrid}>
+            <div style={{ ...statCard, borderLeft: "6px solid #6366f1" }}>
+              <p>Total</p>
+              <h3>{total}</h3>
+            </div>
+
+            <div style={{ ...statCard, borderLeft: "6px solid #4CAF50" }}>
+              <p>Passed</p>
+              <h3>{passed}</h3>
+            </div>
+
+            <div style={{ ...statCard, borderLeft: "6px solid #F44336" }}>
+              <p>Failed</p>
+              <h3>{failed}</h3>
+            </div>
+
+            <div style={{ ...statCard, borderLeft: "6px solid #FF9800" }}>
+              <p>Blocked</p>
+              <h3>{blocked}</h3>
+            </div>
           </div>
 
-          {/* PieChart */}
-          <PieChart width={250} height={250}>
-            <Pie
-              data={chartData}
-              cx="50%"
-              cy="50%"
-              outerRadius={80}
-              dataKey="value"
-              label
-            >
-              {chartData.map((entry, index) => (
-                <Cell key={index} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </div>
+          {/* Chart */}
+          <div style={chartWrapper}>
+            <PieChart width={300} height={300}>
+              <Pie
+                data={chartData}
+                cx="50%"
+                cy="50%"
+                outerRadius={90}
+                dataKey="value"
+                label
+              >
+                {chartData.map((entry, index) => (
+                  <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </div>
+        </>
       )}
 
-      {/* Test Case list */}
+      {/* Test case list */}
       <div style={testCaseListContainer}>
         {testCases.map((tc) => (
           <TestCaseCard
@@ -74,7 +91,7 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Edit wrapper */}
+      {/* Edit form */}
       {editingTestCase && (
         <div style={editWrapperStyle}>
           <AddTestCase
@@ -88,10 +105,39 @@ export default function Dashboard() {
 }
 
 // 🎨 Styles
+
 const containerStyle = {
-  maxWidth: "700px",
+  maxWidth: "800px",
   margin: "0 auto",
   padding: "20px",
+};
+
+const statsGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+  gap: "16px",
+  marginTop: "20px",
+  marginBottom: "30px",
+};
+
+const statCard = {
+  backgroundColor: "#fff",
+  padding: "16px",
+  borderRadius: "12px",
+  boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
+  textAlign: "center",
+};
+
+const chartWrapper = {
+  display: "flex",
+  justifyContent: "center",
+  marginBottom: "30px",
+};
+
+const testCaseListContainer = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "20px",
 };
 
 const editWrapperStyle = {
@@ -100,30 +146,8 @@ const editWrapperStyle = {
   borderRadius: "16px",
   backgroundColor: "#f9fafb",
   boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
-  transition: "all 0.3s ease",
 };
 
-// flex container pre stats + graf
-const statsChartContainer = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginBottom: "30px",
-  padding: "20px",
-  borderRadius: "16px",
-  backgroundColor: "#f0f4f8",
-  flexWrap: "wrap",
-  gap: "20px",
-};
-
-// test case list container
-const testCaseListContainer = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "20px",
-};
-
-// empty state
 const emptyStateStyle = {
   padding: "40px",
   textAlign: "center",
@@ -132,14 +156,5 @@ const emptyStateStyle = {
   fontSize: "16px",
   backgroundColor: "#f9fafb",
   borderRadius: "16px",
-  marginBottom: "20px",
-};
-
-// stats box
-const statsStyle = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "10px",
-  fontWeight: "bold",
-  fontSize: "16px",
+  marginTop: "20px",
 };

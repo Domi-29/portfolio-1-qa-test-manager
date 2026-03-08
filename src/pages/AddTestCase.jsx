@@ -12,16 +12,26 @@ export default function AddTestCase({ existingTestCase, onFinish }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!title) return;
 
     if (existingTestCase) {
-      updateTestCase({ ...existingTestCase, title, status });
+      const updatedTestCase = {
+        ...existingTestCase,
+        title,
+        status,
+      };
+
+      updateTestCase(updatedTestCase);
     } else {
-      addTestCase({ title, status });
+      addTestCase({
+        title,
+        status,
+      });
     }
 
     setTitle("");
-    setStatus(existingTestCase?.status || TEST_CASE_STATUS.BLOCKED);
+    setStatus(TEST_CASE_STATUS.BLOCKED);
 
     onFinish?.();
   };
